@@ -1,9 +1,14 @@
 // @flow
 
+import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from '../base/app';
 import { CONFERENCE_FAILED, CONFERENCE_JOINED } from '../base/conference';
 import { JitsiConferenceErrors, JitsiConferenceEvents } from '../base/lib-jitsi-meet';
-import { getFirstLoadableAvatarUrl, getParticipantDisplayName } from '../base/participants';
+import {
+    getFirstLoadableAvatarUrl,
+    getParticipantDisplayName
+} from '../base/participants';
 import { MiddlewareRegistry, StateListenerRegistry } from '../base/redux';
+import { playSound, registerSound, unregisterSound } from '../base/sounds';
 import { isTestModeEnabled } from '../base/testing';
 import { NOTIFICATION_TYPE, showNotification } from '../notifications';
 import { isPrejoinPageEnabled } from '../prejoin/functions';
@@ -18,9 +23,19 @@ import {
     startKnocking,
     setPasswordJoinFailed
 } from './actions';
+import { PARTICIPANT_KNOCKING_SOUND_ID } from './constants';
+import { PARTICIPANT_KNOCKING_FILE } from './sounds';
 
 MiddlewareRegistry.register(store => next => action => {
     switch (action.type) {
+    case APP_WILL_MOUNT:
+        _registerSounds(store);
+
+        return next(action);
+    case APP_WILL_UNMOUNT:
+        _unregisterSounds(store);
+
+        return next(action);
     case CONFERENCE_FAILED:
         return _conferenceFailed(store, next, action);
     case CONFERENCE_JOINED:
@@ -28,6 +43,8 @@ MiddlewareRegistry.register(store => next => action => {
     case KNOCKING_PARTICIPANT_ARRIVED_OR_UPDATED: {
         // We need the full update result to be in the store already
         const result = next(action);
+
+        _maybePlaySounds(store, action);
 
         _findLoadableAvatarForKnockingParticipant(store, action.participant);
 
@@ -195,4 +212,46 @@ function _maybeSendLobbyNotification(origin, message, { dispatch, getState }) {
     }
 
     dispatch(showNotification(notificationProps, isTestModeEnabled(getState()) ? undefined : 5000));
+}
+
+/**
+ * Plays sounds when participants join/leave conference.
+ *
+ * @param {Store} store - The redux store.
+ * @param {Action} action - The redux action. Should be either
+ * {@link PARTICIPANT_JOINED} or {@link PARTICIPANT_LEFT}.
+ * @private
+ * @returns {void}
+ */
+function _maybePlaySounds({ dispatch }, action) {
+    if (action.type === KNOCKING_PARTICIPANT_ARRIVED_OR_UPDATED) {
+        dispatch(playSound(PARTICIPANT_KNOCKING_SOUND_ID));
+    }
+}
+
+/**
+ * Registers sounds related with the participants feature.
+ *
+ * @param {Store} store - The redux store.
+ * @private
+ * @returns {void}
+ */
+function _registerSounds({ dispatch }) {
+    dispatch(
+        registerSound(PARTICIPANT_KNOCKING_SOUND_ID, PARTICIPANT_KNOCKING_FILE)
+    );
+}
+
+
+/**
+ * Unregisters sounds related with the participants feature.
+ *
+ * @param {Store} store - The redux store.
+ * @private
+ * @returns {void}
+ */
+function _unregisterSounds({ dispatch }) {
+    dispatch(
+        unregisterSound(PARTICIPANT_KNOCKING_SOUND_ID)
+    );
 }

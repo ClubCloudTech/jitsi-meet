@@ -54,6 +54,13 @@ export const PARTICIPANT_JOINED_SOUND_ID = 'PARTICIPANT_JOINED_SOUND';
 export const PARTICIPANT_LEFT_SOUND_ID = 'PARTICIPANT_LEFT_SOUND';
 
 /**
+ * The identifier of the sound to be played when remote participant knocks
+ * the room.
+ * @type {string}
+ */
+export const PARTICIPANT_KNOCKING_SOUND_ID = 'PARTICIPANT_KNOCKING_SOUND';
+
+/**
  * The set of possible XMPP MUC roles for conference participants.
  *
  * @enum {string}
