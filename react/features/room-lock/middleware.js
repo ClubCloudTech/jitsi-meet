@@ -112,7 +112,9 @@ function _conferenceFailed({ dispatch }, next, action) {
             error.recoverable = true;
         }
         if (error.recoverable) {
-            dispatch(_openPasswordRequiredPrompt(conference));
+            setTimeout(() => {
+                dispatch(_openPasswordRequiredPrompt(conference));
+            }, 1000);
         }
     } else {
         dispatch(hideDialog(PasswordRequiredPrompt));
