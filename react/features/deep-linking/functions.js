@@ -11,6 +11,7 @@ import {
     NoMobileApp
 } from './components';
 import { _openDesktopApp } from './openDesktopApp';
+import { isSupportedMobileBrowser } from '../base/environment';
 
 /**
  * Generates a deep linking URL based on the current window URL.
@@ -58,7 +59,7 @@ export function getDeepLinkingPage(state) {
         return Promise.resolve();
     }
 
-    if (isMobileBrowser()) { // mobile
+    if (isMobileBrowser() && !isSupportedMobileBrowser) { // mobile
         const mobileAppPromo
             = typeof interfaceConfig === 'object'
                 && interfaceConfig.MOBILE_APP_PROMO;
