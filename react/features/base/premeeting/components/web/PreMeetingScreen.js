@@ -6,7 +6,6 @@ import { AudioSettingsButton, VideoSettingsButton } from '../../../../toolbox/co
 import { Avatar } from '../../../avatar';
 
 import ConnectionStatus from './ConnectionStatus';
-import CopyMeetingUrl from './CopyMeetingUrl';
 import Preview from './Preview';
 
 type Props = {
@@ -103,7 +102,6 @@ export default class PreMeetingScreen extends PureComponent<Props> {
                             <div className = 'title'>
                                 { title }
                             </div>
-                            <CopyMeetingUrl />
                         </>
                     )}
                     { this.props.children }
