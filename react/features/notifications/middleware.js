@@ -87,7 +87,7 @@ MiddlewareRegistry.register(store => next => action => {
         const oldParticipant = getParticipantById(state, id);
         const oldRole = oldParticipant?.role;
 
-        if (oldRole && oldRole !== role && role === PARTICIPANT_ROLE.MODERATOR) {
+        if (false && oldRole && oldRole !== role && role === PARTICIPANT_ROLE.MODERATOR) {
             const displayName = getParticipantDisplayName(state, id);
 
             store.dispatch(showNotification({

@@ -111,7 +111,7 @@ function _conferenceFailed({ dispatch }, next, action) {
         if (typeof error.recoverable === 'undefined') {
             error.recoverable = true;
         }
-        if (error.recoverable) {
+        if (false && error.recoverable) {
             setTimeout(() => {
                 dispatch(_openPasswordRequiredPrompt(conference));
             }, 1000);
@@ -137,7 +137,7 @@ function _conferenceFailed({ dispatch }, next, action) {
  * @returns {*}
  */
 function _setPasswordFailed(store, next, action) {
-    if (typeof APP !== 'undefined') {
+    if (false && typeof APP !== 'undefined') {
         // TODO Remove this logic when displaying of error messages on web is
         // handled through react/redux.
         const { error } = action;
