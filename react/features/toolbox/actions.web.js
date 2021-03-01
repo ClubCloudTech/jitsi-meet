@@ -12,8 +12,10 @@ import {
     setToolboxTimeoutMS,
     setToolboxVisible
 } from './actions.native';
+import { jitsiLocalStorage } from '@jitsi/js-utils/jitsi-local-storage';
 
 declare var interfaceConfig: Object;
+declare var APP: Object;
 
 export * from './actions.native';
 
@@ -92,9 +94,14 @@ export function hideToolbox(force: boolean = false): Function {
                     || state['features/chat'].isOpen)) {
             dispatch(
                 setToolboxTimeout(
-                    () => dispatch(hideToolbox()),
+                    () => {
+                        APP.API.notifyToolboxVisibilityChanged(false);
+
+                        return dispatch(hideToolbox());
+                    },
                     timeoutMS));
         } else {
+            APP.API.notifyToolboxVisibilityChanged(false);
             dispatch(setToolboxVisible(false));
         }
     };
@@ -133,6 +140,7 @@ export function showToolbox(timeout: number = 0): Object {
         } = state['features/toolbox'];
 
         if (enabled && !visible) {
+            APP.API.notifyToolboxVisibilityChanged(true);
             dispatch(setToolboxVisible(true));
 
             // If the Toolbox is always visible, there's no need for a timeout

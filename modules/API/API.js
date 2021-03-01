@@ -1027,6 +1027,20 @@ class API {
     }
 
     /**
+     * Notify external application (if API is enabled) that the toolbox
+     * visibility has changed.
+     *
+     * @param {string} visible - True if toolbox is visible.
+     * @returns {void}
+     */
+    notifyToolboxVisibilityChanged(visible: boolean) {
+        this._sendEvent({
+            name: 'toolbox-visibility-changed',
+            visible
+        });
+    }
+
+    /**
      * Notify external application (if API is enabled) that the localStorage has changed.
      *
      * @param {string} localStorageContent - The new localStorageContent.
